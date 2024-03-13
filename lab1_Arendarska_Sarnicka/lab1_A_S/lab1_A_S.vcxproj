@@ -139,16 +139,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Schrage.cpp" />
-    <ClCompile Include="SortRQ.cpp" />
+    <ClCompile Include="Algorithms.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="SortR.cpp" />
     <ClCompile Include="task.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="header\SortR.h" />
-    <ClInclude Include="header\SortRQ.h" />
-    <ClInclude Include="header\Schrage.h" />
+    <ClInclude Include="header\Algorithms.h" />
     <ClInclude Include="header\task.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
