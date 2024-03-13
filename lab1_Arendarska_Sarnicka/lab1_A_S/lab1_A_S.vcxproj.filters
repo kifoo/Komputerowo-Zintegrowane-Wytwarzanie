@@ -18,17 +18,11 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="task.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Algorithms.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="header\task.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="header\Algorithms.h">
       <Filter>Header Files</Filter>
     </ClInclude>
