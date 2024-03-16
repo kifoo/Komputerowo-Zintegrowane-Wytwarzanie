@@ -6,40 +6,45 @@ Algorithms::Algorithms() {
 Algorithms::~Algorithms() {
 }
 
-// Does this work?
 void Algorithms::sort_r() {
-	this->task_list.sort([](const task& a, const task& b) {
-		return a.r < b.r;
-		});
+	sort(task_list.begin(), task_list.end(), comparator_r);
 }
 
-
-void Algorithms::sort_rq(){
-
+void Algorithms::sort_rq() {
+	sort(task_list.begin(), task_list.end(), comparator_rq);
 }
 
-// Need to be fixed
-void Algorithms::schrage(){
-	list<task> G;
-	list<task> N = this->task_list;
+void Algorithms::schrage() {
+	vector<task> ready;
+	copy(task_list.begin(), task_list.end(), back_inserter(ready));
+	vector<task> proces, done_list;
+	sort(ready.begin(), ready.end(), comparator_r);
 	task e;
 	int t = 0;
-	while (!G.empty() || !N.empty()) {
-		while (!N.empty() && N.front().r <= t) {
-			e = N.front();
-			G.push_front(e);
-			N.pop_front();
+	int c_max = 0;
+
+	while (!ready.empty() || !proces.empty()) {
+		while ((!ready.empty()) && (ready.front().r <= t)) {
+			e = ready.front();
+			ready.erase(ready.begin());
+			proces.push_back(e);
+			sort(proces.begin(), proces.end(), comparator_q);
 		}
-		if (G.empty()) {
-			t = N.front().r;
-		}
+		if (proces.empty()) t = ready.front().r;
 		else {
-			e = G.front();
-			G.pop_front();
+			e = proces.front();
+			proces.erase(proces.begin());
+
+			done_list.push_back(e);
+
 			t = t + e.p;
+			c_max = max(c_max, t + e.q);
 		}
 	}
-	this->task_list = G;
+	// update task_list with the new order
+	cout<< c_max << endl;
+	this->task_list = done_list;
+
 }
 
 void Algorithms::potts(){
@@ -58,13 +63,12 @@ void Algorithms::read_data(const string& path) {
 	ifstream data;
 	data.open(path, ifstream::in);
 	int n = 0;
-
-	list<task> task_list;
 	task e;
 
 	if (data.is_open()) {
 		data >> n;
 		for (int i = 0; i < n; i++) {
+			e.id = i + 1;
 			data >> e.r;
 			data >> e.p;
 			data >> e.q;
@@ -77,7 +81,6 @@ void Algorithms::read_data(const string& path) {
 	cout << "Read data ok\n";
 
 	data.close();
-	this->task_list = task_list;
 	return;
 }
 
@@ -85,8 +88,11 @@ void Algorithms::write_data(const string& path) {
 	ofstream data;
 	data.open(path, std::ios::out);
 	if (data.is_open()) {
+		cout <<  path << '\t';
 		for (const auto& t : this->task_list) {
-			data << t.r << ' ' << t.p << ' ' << t.q << '\n';
+			//data << t.r << ' ' << t.p << ' ' << t.q << '\n';
+			data << t.id << ' ';
+			cout << t.id << ' ';
 		}
 		cout << "Write data ok\n";
 	}

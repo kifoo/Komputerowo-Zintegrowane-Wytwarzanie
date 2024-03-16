@@ -22,10 +22,11 @@ int main() {
 	for (int i = 0; i < 4; i++)
 	{
 		alg.read_data(data_p[i]);
-		alg.sort_r();
-		//coœ mi tutaj nie dzia³a :((
+		//alg.sort_r();
+		//alg.sort_rq();
+		alg.schrage();
 		alg.write_data(data_s[i]);
-		//alg.clear_list();
+		alg.clear_list();
 	}
 
 	return 0;
