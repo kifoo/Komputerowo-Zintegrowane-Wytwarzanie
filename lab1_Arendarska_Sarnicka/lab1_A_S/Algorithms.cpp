@@ -7,14 +7,174 @@ Algorithms::Algorithms() {
 Algorithms::~Algorithms() {
 }
 
-void Algorithms::sort_r() {
-	sort(task_list.begin(), task_list.end(), comparator_min_r);
+
+int Algorithms::calculate_cmax(vector<task> t_list) {
+	int c_max = 0;
+	int t = 0;
+	for (const auto& tl : t_list) {
+		if (t < tl.r)
+			t = tl.r + tl.p;
+		else
+			t = t + tl.p;
+		c_max = max(c_max, t + tl.q);
+	}
+	return c_max;
 }
 
-void Algorithms::sort_rq() {
-	sort(this->task_list.begin(), this->task_list.end(), comparator_max_q);
-
+vector<vector<task>> Algorithms::permutations() {	
+	vector<vector<task>> all_permutations;
+	for(size_t i = 0; i < this->task_list.size(); i++) {
+		for(size_t j = i + 1; j < this->task_list.size(); j++){
+			vector<task> tmp = this->task_list;
+			swap(tmp[i], tmp[j]);
+			all_permutations.push_back(tmp);
+		}
+	}
+	return all_permutations;
 }
+
+vector<task> Algorithms::tabu_search(int max_iter, int& c_max) {
+	int U = INT_MAX;
+	int min_U = INT_MAX;
+
+	//vector<task> carlier_list;
+	//int non_important = Carlier(U, min_U ,carlier_list);
+	//vector<task> best_list = this->task_list = carlier_list;
+
+	int non_important = schrage(task_list);
+	vector<task> best_list = this->task_list;
+	vector<task> actual_list = this->task_list;
+
+
+	vector<vector<task>> tabu_list;
+
+	for (int iter = 0; iter < max_iter; iter++) {
+		vector<vector<task>> all_permutations = permutations();
+		vector<task> best_permutation;
+
+		for (const vector<task>& neighbor : all_permutations) {
+			if (find_if(tabu_list.begin(), tabu_list.end(), [&neighbor](const vector<task>& v) {return comparator_equal(v, neighbor);}) == tabu_list.end()) {
+				int cmax = calculate_cmax(neighbor);
+				if (cmax < c_max) {
+					best_permutation = neighbor;
+					c_max = cmax;
+				}
+			}
+		}
+
+		if (best_permutation.empty()) {
+			break;
+		}
+
+		actual_list = best_permutation;
+		tabu_list.push_back(best_permutation);
+		if (tabu_list.size() > 12) {
+			// Removing the oldest list 
+			tabu_list.erase(tabu_list.begin());
+		}
+
+		if (calculate_cmax(best_permutation) < calculate_cmax(best_list)) {
+			best_list = best_permutation;
+			c_max = calculate_cmax(best_list);
+		}
+	}
+	this->task_list = best_list;
+	return best_list;
+}
+
+//
+//void Algorithms::best_task_list(vector<task>& tasks, task& long_task) {
+//	vector<task> process;
+//	vector<task> best;
+//	task e;
+//	task l{ 0, 0, 0, numeric_limits<int>::max() };
+//	int l_p = 0;
+//	int t = 0;
+//	int t2 = 0;
+//	int c_max = 0;
+//
+//	while (!tasks.empty() || !process.empty()) {
+//		while ((!tasks.empty()) && (tasks.back().r <= t)) {
+//			process.push_back(tasks.back());
+//			tasks.pop_back();
+//			if (process.back().q > l.q || t + process.back().p > long_task.r) {
+//				e = l;
+//				l.p = t2 - process.back().r;
+//				t2 = process.back().r;
+//				if (l.p > 0) {
+//					process.push_back(e);
+//					auto it = find_if(best.begin(), best.end(), [e](const task& t) {return t.id == e.id; });
+//					best.erase(it);
+//					t -= l.p;
+//
+//				}
+//			}
+//		}
+//		sort(process.begin(), process.end(), comparator_min_q);
+//		if (process.empty()) {
+//			t = tasks.back().r;
+//			t2 = t;
+//		}
+//		else {
+//			l = process.back();
+//			process.pop_back();
+//
+//			best.push_back(l);
+//
+//			t += l.p;
+//			t2 = t;
+//			c_max = max(c_max, t + l.q);
+//
+//		}
+//	}
+//
+//	vector<task> tmp;
+//	for (task& tt : best) {
+//		auto it = find_if(best.begin(), best.end(), [tt](const task& t) {return t.id == tt.id; });
+//		copy(best.begin(), it+1, back_inserter(tmp));
+//		if (calculate_cmax(tmp) - tt.q > long_task.r) {
+//			tmp.pop_back();
+//			tasks = tmp;
+//			return;
+//		}
+//		tmp.clear();
+//	}
+//}
+//
+//
+//
+//void Algorithms::My_Own_Atgorithm(int& C_max, vector<task>& result_list){
+//	vector<task> copy = this->task_list;
+//	vector<task> before_long_task;
+//	vector<task> bft;
+//	vector<task> ready_list;
+//	vector<task> processed_list;
+//
+//	int s = int(this->task_list.size());
+//
+//	task long_task = *max_element(copy.begin(), copy.end(), [](const task& t1, const task& t2) {return t1.finished < t2.finished; });
+//
+//	result_list = this->task_list;
+//	C_max = calculate_cmax(this->task_list);
+//
+//	for (auto& t : copy) {
+//		if (t.done_p <= long_task.r) {
+//			before_long_task.push_back(t);
+//		}
+//	}
+//
+//	sort(before_long_task.begin(), before_long_task.end(), comparator_max_r);
+//	best_task_list(before_long_task, long_task);
+//
+//	for (auto& t : before_long_task) {
+//		cout<< t.id << " " << t.r << " " << t.p << " " << t.q << "\n";
+//	}
+//	int B = mark_B(before_long_task);
+//	cout << " B : \t " << B << endl;
+//	result_list = before_long_task;
+//	C_max = calculate_cmax(result_list);
+//	cout<< "Longest task: " << long_task.id << "\tfinished: "<< long_task.finished << endl;
+//}
 
 int Algorithms::schrage(vector<task>& t_list) {
 	vector<task> ready = t_list;
@@ -79,100 +239,6 @@ int Algorithms::schrage2() {
 		}
 	}
 	return c_max;
-}
-
-
-void Algorithms::best_task_list(vector<task>& tasks, task& long_task) {
-	vector<task> process;
-	vector<task> best;
-	task e;
-	task l{ 0, 0, 0, numeric_limits<int>::max() };
-	int l_p = 0;
-	int t = 0;
-	int t2 = 0;
-	int c_max = 0;
-
-	while (!tasks.empty() || !process.empty()) {
-		while ((!tasks.empty()) && (tasks.back().r <= t)) {
-			process.push_back(tasks.back());
-			tasks.pop_back();
-			if (process.back().q > l.q || t + process.back().p > long_task.r) {
-				e = l;
-				l.p = t2 - process.back().r;
-				t2 = process.back().r;
-				if (l.p > 0) {
-					process.push_back(e);
-					auto it = find_if(best.begin(), best.end(), [e](const task& t) {return t.id == e.id; });
-					best.erase(it);
-					t -= l.p;
-
-				}
-			}
-		}
-		sort(process.begin(), process.end(), comparator_min_q);
-		if (process.empty()) {
-			t = tasks.back().r;
-			t2 = t;
-		}
-		else {
-			l = process.back();
-			process.pop_back();
-
-			best.push_back(l);
-
-			t += l.p;
-			t2 = t;
-			c_max = max(c_max, t + l.q);
-
-		}
-	}
-
-	vector<task> tmp;
-	for (task& tt : best) {
-		auto it = find_if(best.begin(), best.end(), [tt](const task& t) {return t.id == tt.id; });
-		copy(best.begin(), it+1, back_inserter(tmp));
-		if (calculate_cmax(tmp) - tt.q > long_task.r) {
-			tmp.pop_back();
-			tasks = tmp;
-			return;
-		}
-		tmp.clear();
-	}
-}
-
-
-
-void Algorithms::My_Own_Atgorithm(int& C_max, vector<task>& result_list){
-	vector<task> copy = this->task_list;
-	vector<task> before_long_task;
-	vector<task> bft;
-	vector<task> ready_list;
-	vector<task> processed_list;
-
-	int s = int(this->task_list.size());
-
-	task long_task = *max_element(copy.begin(), copy.end(), [](const task& t1, const task& t2) {return t1.finished < t2.finished; });
-
-	result_list = this->task_list;
-	C_max = calculate_cmax(this->task_list);
-
-	for (auto& t : copy) {
-		if (t.done_p <= long_task.r) {
-			before_long_task.push_back(t);
-		}
-	}
-
-	sort(before_long_task.begin(), before_long_task.end(), comparator_max_r);
-	best_task_list(before_long_task, long_task);
-
-	for (auto& t : before_long_task) {
-		cout<< t.id << " " << t.r << " " << t.p << " " << t.q << "\n";
-	}
-	int B = mark_B(before_long_task);
-	cout << " B : \t " << B << endl;
-	result_list = before_long_task;
-	C_max = calculate_cmax(result_list);
-	cout<< "Longest task: " << long_task.id << "\tfinished: "<< long_task.finished << endl;
 }
 
 // Carlier algorithm - using recursion
@@ -260,20 +326,6 @@ int Algorithms::Carlier(int& UB, int& min_U, vector<task>& result_list){
 
 }
 
-int Algorithms::calculate_cmax(vector<task> t_list) {
-	int c_max = 0;
-	int t = 0;
-	for (const auto& tl : t_list) {
-		if(t < tl.r)
-			t = tl.r + tl.p;
-		else
-			t = t + tl.p;
-		c_max = max(c_max, t + tl.q);
-	}
-	return c_max;
-}
-
-
 // looks for the smallest element 
 // Cmax = a.r + suma(a,b)p + b.q
 int  Algorithms::mark_A(int b) {
@@ -304,7 +356,6 @@ int  Algorithms::mark_B(vector<task>& t_list) {
 	}
 	return -1; // requested b does not exist
 }
-
 
 // looks for the bigest element between a and b with the time of post-processing shorter than b.q
 // j.q < b.q 
@@ -340,29 +391,5 @@ void Algorithms::read_data(const string& path) {
 	cout << "Read data ok\n";
 
 	data.close();
-	return;
-}
-
-void Algorithms::write_data(const string& path) {
-	ofstream data;
-	data.open(path, ios::out);
-	if (data.is_open()) {
-		cout <<  path << '\t';
-		for (const auto& t : this->task_list) {
-			//data << t.r << ' ' << t.p << ' ' << t.q << '\n';
-			data << t.id << ' ';
-			cout << t.id << ' ';
-		}
-		cout << "Write data ok\n";
-	}
-	else {
-		cout << "Error opening file: " << path << endl;
-	}
-	data.close();
-	return;
-}
-
-void Algorithms::clear_list() {
-	this->task_list.clear();
 	return;
 }

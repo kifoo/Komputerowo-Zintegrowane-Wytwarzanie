@@ -5,7 +5,6 @@
 #include <vector>
 #include "Task.h"
 #include "Algorithms.h"
-#include "Regret.h"
 
 class Result
 {

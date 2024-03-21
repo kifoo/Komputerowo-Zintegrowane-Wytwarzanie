@@ -30,12 +30,12 @@ int main() {
 	// case 6: testy funkcji
 	// case 7: Carlier
 
-	//for (int i = 0; i < 4; i++)
-	//{
-	//	result.run(data_p[i], 6);
-	//	//result.write_data(data_s[i]);
-	//}
-	result.run("data/test.txt", 6);
+	for (int i = 0; i < 4; i++)
+	{
+		result.run(data_p[i], 6);
+		result.write_data(data_s[i]);
+	}
+	
 	cout<< "\nSum of cmax: " << result.sum_c_max << endl;
 	std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
 	cout<< "Time difference = " << std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count() << "[ms]" << std::endl;
