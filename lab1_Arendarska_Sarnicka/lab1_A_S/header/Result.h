@@ -5,6 +5,7 @@
 #include <vector>
 #include "Task.h"
 #include "Algorithms.h"
+#include "Regret.h"
 
 class Result
 {
@@ -14,7 +15,6 @@ public:
 	std::vector<task> task_list;
 
 	Result();
-	//Result(int c, std::vector<task> tl);
 	~Result();
 
 	void run(const std::string& path, int choice);

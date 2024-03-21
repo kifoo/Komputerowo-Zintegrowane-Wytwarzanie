@@ -141,12 +141,15 @@
   <ItemGroup>
     <ClCompile Include="Algorithms.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Regret.cpp" />
     <ClCompile Include="Result.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="header\Algorithms.h" />
     <ClInclude Include="header\Result.h" />
-    <ClInclude Include="Task.h" />
+    <ClInclude Include="header\Task.h" />
+    <ClInclude Include="header\Regret.h" />
+    <ClInclude Include="header\Tree_Node.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

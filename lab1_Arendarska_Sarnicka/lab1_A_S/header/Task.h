@@ -5,5 +5,6 @@ struct task {
 	int r;		// ready time
 	int p;		// processing time
 	int q;		// post-procesing time
-	int c;		// completion time (without post procesing) -  for Carlier Algorithm
+	int done_p;		// ready time + processing time 
+	int finished;	// ready time + processing time + post-procesing time
 };
