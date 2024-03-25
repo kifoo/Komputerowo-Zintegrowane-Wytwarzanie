@@ -36,11 +36,6 @@ vector<vector<task>> Algorithms::permutations() {
 vector<task> Algorithms::tabu_search(int max_iter, int& c_max) {
 	int U = INT_MAX;
 	int min_U = INT_MAX;
-
-	//vector<task> carlier_list;
-	//int non_important = Carlier(U, min_U ,carlier_list);
-	//vector<task> best_list = this->task_list = carlier_list;
-
 	int non_important = schrage(task_list);
 	vector<task> best_list = this->task_list;
 	vector<task> actual_list = this->task_list;
@@ -82,99 +77,115 @@ vector<task> Algorithms::tabu_search(int max_iter, int& c_max) {
 	return best_list;
 }
 
-//
-//void Algorithms::best_task_list(vector<task>& tasks, task& long_task) {
-//	vector<task> process;
-//	vector<task> best;
-//	task e;
-//	task l{ 0, 0, 0, numeric_limits<int>::max() };
-//	int l_p = 0;
-//	int t = 0;
-//	int t2 = 0;
-//	int c_max = 0;
-//
-//	while (!tasks.empty() || !process.empty()) {
-//		while ((!tasks.empty()) && (tasks.back().r <= t)) {
-//			process.push_back(tasks.back());
-//			tasks.pop_back();
-//			if (process.back().q > l.q || t + process.back().p > long_task.r) {
-//				e = l;
-//				l.p = t2 - process.back().r;
-//				t2 = process.back().r;
-//				if (l.p > 0) {
-//					process.push_back(e);
-//					auto it = find_if(best.begin(), best.end(), [e](const task& t) {return t.id == e.id; });
-//					best.erase(it);
-//					t -= l.p;
-//
-//				}
-//			}
-//		}
-//		sort(process.begin(), process.end(), comparator_min_q);
-//		if (process.empty()) {
-//			t = tasks.back().r;
-//			t2 = t;
-//		}
-//		else {
-//			l = process.back();
-//			process.pop_back();
-//
-//			best.push_back(l);
-//
-//			t += l.p;
-//			t2 = t;
-//			c_max = max(c_max, t + l.q);
-//
-//		}
-//	}
-//
-//	vector<task> tmp;
-//	for (task& tt : best) {
-//		auto it = find_if(best.begin(), best.end(), [tt](const task& t) {return t.id == tt.id; });
-//		copy(best.begin(), it+1, back_inserter(tmp));
-//		if (calculate_cmax(tmp) - tt.q > long_task.r) {
-//			tmp.pop_back();
-//			tasks = tmp;
-//			return;
-//		}
-//		tmp.clear();
-//	}
-//}
-//
-//
-//
-//void Algorithms::My_Own_Atgorithm(int& C_max, vector<task>& result_list){
-//	vector<task> copy = this->task_list;
-//	vector<task> before_long_task;
-//	vector<task> bft;
-//	vector<task> ready_list;
-//	vector<task> processed_list;
-//
-//	int s = int(this->task_list.size());
-//
-//	task long_task = *max_element(copy.begin(), copy.end(), [](const task& t1, const task& t2) {return t1.finished < t2.finished; });
-//
-//	result_list = this->task_list;
-//	C_max = calculate_cmax(this->task_list);
-//
-//	for (auto& t : copy) {
-//		if (t.done_p <= long_task.r) {
-//			before_long_task.push_back(t);
-//		}
-//	}
-//
-//	sort(before_long_task.begin(), before_long_task.end(), comparator_max_r);
-//	best_task_list(before_long_task, long_task);
-//
-//	for (auto& t : before_long_task) {
-//		cout<< t.id << " " << t.r << " " << t.p << " " << t.q << "\n";
-//	}
-//	int B = mark_B(before_long_task);
-//	cout << " B : \t " << B << endl;
-//	result_list = before_long_task;
-//	C_max = calculate_cmax(result_list);
-//	cout<< "Longest task: " << long_task.id << "\tfinished: "<< long_task.finished << endl;
-//}
+// ========================================
+int Algorithms::find_best_sum(vector<task>& tasks, task& long_task) {
+	vector<task> best_permutation;
+	int sum, sum2;
+	int best_sum = 0, best_it = 0 ;
+	for (size_t i = 0; i < tasks.size(); i++) {
+		for (size_t j = i + 1; j < tasks.size(); j++) {
+			vector<task> tmp = tasks;
+			sum = 0;
+			swap(tmp[i], tmp[j]);
+			for (int k = 0; k < tmp.size(); k++) {
+				task t = tmp[k];
+				sum2 = sum;
+				if (sum < t.r)
+					sum = t.r + t.p;
+				else
+					sum += t.p;
+
+				if (sum == long_task.r)
+				{
+					tasks = tmp;
+					return k;
+				}
+				else if (sum > long_task.r and sum2 > best_sum) {
+					best_sum = sum2;
+					best_permutation = tmp;
+					best_it = k;
+					break;
+				}
+				else if (sum > long_task.r)
+					break;
+			}
+		}
+	}
+	tasks = best_permutation;
+	return best_it;
+}
+
+int Algorithms::find_best_sum_back(vector<task>& tasks, task& long_task) {
+	vector<task> best_permutation;
+	int sum, sum2;
+	int best_sum = 0, best_it = 0;
+	for (size_t i = 0; i < tasks.size(); i++) {
+		for (size_t j = i + 1; j < tasks.size(); j++) {
+			vector<task> tmp = tasks;
+			sum = 0;
+			swap(tmp[i], tmp[j]);
+			for (int k = 0; k < tmp.size(); k++) {
+				task t = tmp[k];
+				sum2 = sum;
+				if (sum < t.r)
+					sum = t.r + t.p;
+				else
+					sum += t.p;
+
+				if (sum == long_task.q)
+				{
+					tasks = tmp;
+					return k;
+				}
+				else if (sum > long_task.q and sum2 > best_sum) {
+					best_sum = sum2;
+					best_permutation = tmp;
+					best_it = k;
+					break;
+				}
+				else if (sum > long_task.q)
+					break;
+			}
+		}
+	}
+	tasks = best_permutation;
+	return best_it;
+}
+
+
+void Algorithms::one_long_task(int& C_max, vector<task>& result_list){
+	vector<task> copy = this->task_list;
+	vector<task> best_list;
+	vector<task> res_list;
+	int it;
+	int s = int(this->task_list.size());
+
+	task long_task = *max_element(copy.begin(), copy.end(), [](const task& t1, const task& t2) {return t1.finished < t2.finished; });
+
+	result_list = this->task_list;
+	C_max = calculate_cmax(this->task_list);
+
+	for (auto& t : copy) {
+		if (t.done_p <= long_task.r) {
+			best_list.push_back(t);
+		}
+		
+	}
+
+	sort(best_list.begin(), best_list.end(), comparator_max_r);
+	it = find_best_sum_back(best_list, long_task);
+	
+	for (auto& t : best_list) {
+		if(t.id == best_list[it].id)
+			res_list.push_back(long_task);
+		res_list.push_back(t);
+	}
+	reverse(res_list.begin(), res_list.end());
+	result_list = res_list;
+	C_max = calculate_cmax(result_list);
+}
+
+// ========================================
 
 int Algorithms::schrage(vector<task>& t_list) {
 	vector<task> ready = t_list;

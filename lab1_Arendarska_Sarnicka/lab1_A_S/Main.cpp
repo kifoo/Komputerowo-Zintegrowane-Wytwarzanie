@@ -21,7 +21,6 @@ int main() {
 	const string data_p[4] = { "data/p1.txt" ,"data/p2.txt" ,"data/p3.txt" ,"data/p4.txt" };
 	const string data_s[4] = { "solutions/s1.txt" ,"solutions/s2.txt" ,"solutions/s3.txt" ,"solutions/s4.txt" };
 	Result result;
-	
 	//case 1: sort_r
 	// case 2: sort_rq
 	// case 3: schrage
@@ -32,7 +31,7 @@ int main() {
 
 	for (int i = 0; i < 4; i++)
 	{
-		result.run(data_p[i], 6);
+		result.run(data_p[i], i);
 		result.write_data(data_s[i]);
 	}
 	

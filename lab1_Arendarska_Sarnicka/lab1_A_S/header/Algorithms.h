@@ -61,10 +61,10 @@ public:
 	vector<vector<task>> permutations();
 	vector<task> tabu_search(int max_iter, int& c_max);
 
-	/*	This will be for data2
-	void find_best_sum(vector<task>& tasks, task& long_task);
-	void best_task_list(vector<task>& ready, task& l_task);
-	void My_Own_Atgorithm(int& c_max, vector<task>& result_list);*/
+	//	This will be for data2
+	int find_best_sum(vector<task>& tasks, task& long_task);
+	int find_best_sum_back(vector<task>& tasks, task& long_task);
+	void one_long_task(int& c_max, vector<task>& result_list);
 
 	int Carlier(int& UB, int& min_U, vector<task>& result_list);
 	int calculate_cmax(vector<task> t_list);
