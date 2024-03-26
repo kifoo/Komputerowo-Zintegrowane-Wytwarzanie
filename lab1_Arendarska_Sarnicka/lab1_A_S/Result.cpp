@@ -16,17 +16,15 @@ void Result::run(const std::string& path, int choice)
 	int C_max = INT_MAX;
 	alg.read_data(path);
 
-	if (choice != 1) {
+	if (choice != 5) {
 		this->task_list = alg.tabu_search(100, C_max);
 		this->c_max = C_max;
 	}
 	else {
-		// For second data st will be new function, 
-		// if I have time I make it to work based on provided data insted hardcoded
 		vector<task> result_list;
 		alg.one_long_task(C_max, result_list);
 		this->task_list = result_list;
-		//this->task_list = alg.tabu_search(100, C_max);
+		this->task_list = alg.tabu_search(100, C_max);
 		this->c_max = C_max;
 	}
 	this->sum_c_max += this->c_max;

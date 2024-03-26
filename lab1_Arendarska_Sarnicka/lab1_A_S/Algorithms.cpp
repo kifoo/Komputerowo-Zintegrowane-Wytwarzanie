@@ -21,11 +21,11 @@ int Algorithms::calculate_cmax(vector<task> t_list) {
 	return c_max;
 }
 
-vector<vector<task>> Algorithms::permutations() {	
+vector<vector<task>> Algorithms::permutations(vector<task> t_list) {
 	vector<vector<task>> all_permutations;
-	for(size_t i = 0; i < this->task_list.size(); i++) {
-		for(size_t j = i + 1; j < this->task_list.size(); j++){
-			vector<task> tmp = this->task_list;
+	for(size_t i = 0; i < t_list.size(); i++) {
+		for(size_t j = i + 1; j < t_list.size(); j++){
+			vector<task> tmp = t_list;
 			swap(tmp[i], tmp[j]);
 			all_permutations.push_back(tmp);
 		}
@@ -44,7 +44,7 @@ vector<task> Algorithms::tabu_search(int max_iter, int& c_max) {
 	vector<vector<task>> tabu_list;
 
 	for (int iter = 0; iter < max_iter; iter++) {
-		vector<vector<task>> all_permutations = permutations();
+		vector<vector<task>> all_permutations = permutations(best_list);
 		vector<task> best_permutation;
 
 		for (const vector<task>& neighbor : all_permutations) {
@@ -172,7 +172,7 @@ void Algorithms::one_long_task(int& C_max, vector<task>& result_list){
 		
 	}
 
-	sort(best_list.begin(), best_list.end(), comparator_max_r);
+	//sort(best_list.begin(), best_list.end(), comparator_max_r);
 	it = find_best_sum_back(best_list, long_task);
 	
 	for (auto& t : best_list) {

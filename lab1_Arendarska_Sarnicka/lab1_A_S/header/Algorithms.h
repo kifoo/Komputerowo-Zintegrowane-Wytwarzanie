@@ -58,7 +58,7 @@ public:
 	int schrage(vector<task>& t_list);
 	int schrage2();
 
-	vector<vector<task>> permutations();
+	vector<vector<task>> permutations(vector<task> t_list);
 	vector<task> tabu_search(int max_iter, int& c_max);
 
 	//	This will be for data2
