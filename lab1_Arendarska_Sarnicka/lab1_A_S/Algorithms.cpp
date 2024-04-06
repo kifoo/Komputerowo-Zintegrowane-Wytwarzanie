@@ -7,7 +7,34 @@ Algorithms::Algorithms() {
 Algorithms::~Algorithms() {
 }
 
+// Search for best result by comparing R and Q times
+void Algorithms::algorithm_rq(vector<task>& t_list, int size) {
+	int tmp1 = 0;
+	int tmp2 = 1;
+	vector<task> table = t_list;
 
+	for (int i = 0; i < size; i++)
+	{
+		if (i % 2 == 0)
+		{
+			sort(t_list.begin(), t_list.end(), comparator_max_r);
+			table[tmp1] = t_list[t_list.size() - 1];
+			t_list.pop_back();
+			tmp1 += 1;
+		}
+
+		if (i % 2 != 0)
+		{
+			sort(t_list.begin(), t_list.end(), comparator_max_q);
+			table[size - tmp2] = t_list[t_list.size() - 1];
+			t_list.pop_back();
+			tmp2 += 1;
+		}
+	}
+	t_list = table;
+}
+
+// Calculate full time of all tasks
 int Algorithms::calculate_cmax(vector<task> t_list) {
 	int c_max = 0;
 	int t = 0;
@@ -21,6 +48,8 @@ int Algorithms::calculate_cmax(vector<task> t_list) {
 	return c_max;
 }
 
+
+/* Create neighbor permutations */
 vector<vector<task>> Algorithms::permutations(vector<task> t_list) {
 	vector<vector<task>> all_permutations;
 	for(size_t i = 0; i < t_list.size(); i++) {
@@ -33,34 +62,43 @@ vector<vector<task>> Algorithms::permutations(vector<task> t_list) {
 	return all_permutations;
 }
 
+/* Tabu Search */
 vector<task> Algorithms::tabu_search(int max_iter, int& c_max) {
-	int U = INT_MAX;
-	int min_U = INT_MAX;
-	int non_important = schrage(task_list);
+	int actual_cmax = schrage(task_list);
 	vector<task> best_list = this->task_list;
 	vector<task> actual_list = this->task_list;
 
+	//Task with the longest finished time
+	task long_task = *max_element(best_list.begin(), best_list.end(), [](const task& t1, const task& t2) {return t1.finished < t2.finished; });
 
 	vector<vector<task>> tabu_list;
 
 	for (int iter = 0; iter < max_iter; iter++) {
-		vector<vector<task>> all_permutations = permutations(best_list);
+		//Create permutations of actual_list 
+		vector<vector<task>> all_permutations = permutations(actual_list);
 		vector<task> best_permutation;
 
+
 		for (const vector<task>& neighbor : all_permutations) {
-			if (find_if(tabu_list.begin(), tabu_list.end(), [&neighbor](const vector<task>& v) {return comparator_equal(v, neighbor);}) == tabu_list.end()) {
+			// Check if all_permutation has new lists 
+			if (find_if(tabu_list.begin(), tabu_list.end(),
+				[&neighbor](const vector<task>& v)
+				{return comparator_equal(v, neighbor); }) == tabu_list.end()) {
 				int cmax = calculate_cmax(neighbor);
-				if (cmax < c_max) {
+				// Check if new list is better cmax than actual_cmax  
+				if (cmax < actual_cmax) {
 					best_permutation = neighbor;
-					c_max = cmax;
+					actual_cmax = cmax;
 				}
 			}
 		}
 
+		// If not better permutation than break
 		if (best_permutation.empty()) {
 			break;
 		}
 
+		// Update actual_list and tabu_list
 		actual_list = best_permutation;
 		tabu_list.push_back(best_permutation);
 		if (tabu_list.size() > 12) {
@@ -68,16 +106,18 @@ vector<task> Algorithms::tabu_search(int max_iter, int& c_max) {
 			tabu_list.erase(tabu_list.begin());
 		}
 
+		// Update best_list if best_permutation is better 
 		if (calculate_cmax(best_permutation) < calculate_cmax(best_list)) {
 			best_list = best_permutation;
 			c_max = calculate_cmax(best_list);
+			if(c_max == long_task.finished)
+				return best_list;
 		}
-	}
-	this->task_list = best_list;
+	}	
 	return best_list;
 }
 
-// ========================================
+// Find best sum less than long_task R time
 int Algorithms::find_best_sum(vector<task>& tasks, task& long_task) {
 	vector<task> best_permutation;
 	int sum, sum2;
@@ -115,6 +155,7 @@ int Algorithms::find_best_sum(vector<task>& tasks, task& long_task) {
 	return best_it;
 }
 
+// Find best sum less than long_task Q time
 int Algorithms::find_best_sum_back(vector<task>& tasks, task& long_task) {
 	vector<task> best_permutation;
 	int sum, sum2;
@@ -152,7 +193,7 @@ int Algorithms::find_best_sum_back(vector<task>& tasks, task& long_task) {
 	return best_it;
 }
 
-
+// Search for the best result if there is only one long task
 void Algorithms::one_long_task(int& C_max, vector<task>& result_list){
 	vector<task> copy = this->task_list;
 	vector<task> best_list;
@@ -185,8 +226,7 @@ void Algorithms::one_long_task(int& C_max, vector<task>& result_list){
 	C_max = calculate_cmax(result_list);
 }
 
-// ========================================
-
+// Schrage algorithm
 int Algorithms::schrage(vector<task>& t_list) {
 	vector<task> ready = t_list;
 	vector<task> proces, done_list;
@@ -253,7 +293,7 @@ int Algorithms::schrage2() {
 }
 
 // Carlier algorithm - using recursion
-int Algorithms::Carlier(int& UB, int& min_U, vector<task>& result_list){
+int Algorithms::Carlier(int& UB, vector<task>& result_list){
 	int U = 0;
 	int LB = 0;
 
@@ -276,7 +316,6 @@ int Algorithms::Carlier(int& UB, int& min_U, vector<task>& result_list){
 
 	if (U < UB) {
 		UB = U;
-		min_U = U;
 		result_list = task_list;
 	}
 
@@ -306,7 +345,7 @@ int Algorithms::Carlier(int& UB, int& min_U, vector<task>& result_list){
 	LB = schrage2();
 
 	if (LB < UB) {
-		Carlier(UB, min_U, result_list);
+		Carlier(UB, result_list);
 	}
 
 	// restore task C r parameter
@@ -325,7 +364,7 @@ int Algorithms::Carlier(int& UB, int& min_U, vector<task>& result_list){
 	LB = schrage2();
 
 	if (LB < UB) {
-		Carlier(UB, min_U, result_list);
+		Carlier(UB, result_list);
 	}
 
 	// restore task C q parameter
@@ -337,7 +376,7 @@ int Algorithms::Carlier(int& UB, int& min_U, vector<task>& result_list){
 
 }
 
-// looks for the smallest element 
+// Looks for the smallest element 
 // Cmax = a.r + suma(a,b)p + b.q
 int  Algorithms::mark_A(int b) {
 	int c_max = schrage(task_list);
@@ -355,7 +394,7 @@ int  Algorithms::mark_A(int b) {
 	return -1; // requested a does not exist
 }
 
-// looks for the bigest element (with the longest time of post-processing)
+// Looks for the bigest element (with the longest time of post-processing)
 // Cmax = b.c + b.q
 int  Algorithms::mark_B(vector<task>& t_list) {
 	int c_max = schrage(t_list);
@@ -368,7 +407,7 @@ int  Algorithms::mark_B(vector<task>& t_list) {
 	return -1; // requested b does not exist
 }
 
-// looks for the bigest element between a and b with the time of post-processing shorter than b.q
+// Looks for the bigest element between a and b with the time of post-processing shorter than b.q
 // j.q < b.q 
 int  Algorithms::mark_C(int a, int b) {
 	for (int i = b-1; i > a; i--) {
@@ -379,6 +418,7 @@ int  Algorithms::mark_C(int a, int b) {
 	return -1; // requested c does not exist
 }
 
+// Read data from file
 void Algorithms::read_data(const string& path) {
 	ifstream data;
 	data.open(path, ifstream::in);
@@ -403,4 +443,21 @@ void Algorithms::read_data(const string& path) {
 
 	data.close();
 	return;
+}
+
+void Algorithms::write_data(const string& path) {
+	ofstream file;
+	file.open(path);
+	if (file.is_open()) {
+		cout << path << "\t cmax: " << c_max << std::endl;
+		file << path << "\t cmax: " << c_max << std::endl;
+		for (auto& t : task_list) {
+			cout<< t.id << " ";
+			file << t.id << " ";
+		}
+	}
+	else {
+		std::cout << "Error opening file: " << path << std::endl;
+	}
+	file.close();
 }

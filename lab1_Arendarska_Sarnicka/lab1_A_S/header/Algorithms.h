@@ -5,7 +5,6 @@
 #include <algorithm>
 #include <vector>
 #include "Task.h"
-#include "Result.h"
 
 using namespace std;
 
@@ -14,6 +13,7 @@ class Algorithms
 public:
 
 	int n = 0;
+	int c_max = 0;
 	vector<task> task_list;
 	Algorithms();
 	~Algorithms();
@@ -53,24 +53,28 @@ public:
 		if (t1.q < t2.q) return false;
 		return false;
 	}
+	// Compare R and Q
+	void algorithm_rq(vector<task>& t_list, int size);
 
 
-	int schrage(vector<task>& t_list);
-	int schrage2();
-
+	// Tabu Search
 	vector<vector<task>> permutations(vector<task> t_list);
 	vector<task> tabu_search(int max_iter, int& c_max);
 
-	//	This will be for data2
+	//	For seraching best reault if there is one long lask and rest have time r and q = 0
 	int find_best_sum(vector<task>& tasks, task& long_task);
 	int find_best_sum_back(vector<task>& tasks, task& long_task);
 	void one_long_task(int& c_max, vector<task>& result_list);
 
-	int Carlier(int& UB, int& min_U, vector<task>& result_list);
+	// Algorithms form list
+	int schrage(vector<task>& t_list);
+	int schrage2();
+	int Carlier(int& UB, vector<task>& result_list);
 	int calculate_cmax(vector<task> t_list);
 	int mark_A(int b);
 	int mark_B(vector<task>& t_list);
 	int mark_C(int a, int b);
 	void read_data(const string& path);
+	void write_data(const string& path);
 };
 
