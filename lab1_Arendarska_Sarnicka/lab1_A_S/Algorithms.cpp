@@ -168,10 +168,7 @@ int Algorithms::find_best_sum_back(vector<task>& tasks, task& long_task) {
 			for (int k = 0; k < tmp.size(); k++) {
 				task t = tmp[k];
 				sum2 = sum;
-				if (sum < t.r)
-					sum = t.r + t.p;
-				else
-					sum += t.p;
+				sum += t.p;
 
 				if (sum == long_task.q)
 				{
@@ -203,18 +200,15 @@ void Algorithms::one_long_task(int& C_max, vector<task>& result_list){
 
 	task long_task = *max_element(copy.begin(), copy.end(), [](const task& t1, const task& t2) {return t1.finished < t2.finished; });
 
-	result_list = this->task_list;
-	C_max = calculate_cmax(this->task_list);
-
 	for (auto& t : copy) {
 		if (t.done_p <= long_task.r) {
 			best_list.push_back(t);
 		}
-		
 	}
 
-	//sort(best_list.begin(), best_list.end(), comparator_max_r);
-	it = find_best_sum_back(best_list, long_task);
+	for (int i = 0; i < 10; i++) {
+		it = find_best_sum_back(best_list, long_task);		
+	}
 	
 	for (auto& t : best_list) {
 		if(t.id == best_list[it].id)

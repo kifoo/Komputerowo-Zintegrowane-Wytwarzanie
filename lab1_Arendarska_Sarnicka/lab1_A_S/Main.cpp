@@ -23,7 +23,7 @@ int main() {
 	// case 3: Tabu Search
 	// case 4: One long task ( only on data/p2.txt)
 	// case 5: Carlier
-	int choice = 2;
+	int choice = 4;
 
 	std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 

@@ -1,0 +1,44 @@
+-------------------------------------------------------------------------------
+ocena 3.0:
+  - algorytm dynamicznego programowania zwracaj¹cy sumê witi,
+  - sprawozdanie z teoretycznym opisem algorytmu dynamicznego programowania,
+-------------------------------------------------------------------------------
+ocena 3.5:
+  - algorytm dynamicznego programowania zwracaj¹cy sumê witi,
+  - sprawozdanie z teoretycznym opisem algorytmu dynamicznego programowania,
+    porównanie do przegl¹du zupe³nego,
+    wykresy (zmierzonego i aproksymowanego) czasu dzia³ania obu metod,
+-------------------------------------------------------------------------------
+ocena 4.0:
+  - algorytm dynamicznego programowania zwracaj¹cy sumê witi oraz permutacjê,
+  - sprawozdanie z teoretycznym opisem algorytmu dynamicznego programowania,
+-------------------------------------------------------------------------------
+ocena 4.5:
+  - algorytm dynamicznego programowania zwracaj¹cy sumê witi oraz permutacjê,
+  - sprawozdanie z teoretycznym opisem algorytmu dynamicznego programowania,
+    porównanie do przegl¹du zupe³nego, wykresy (zmierzonego i aproksymowanego)
+    czasu dzia³ania obu metod,
+-------------------------------------------------------------------------------
+ocena 5.0:
+  - opracowanie algorytmu programowania dynamicznego zwracaj¹cego pierwsz¹
+    (wed³ug porz¹dku leksykograficznego) permutacjê optymaln¹,
+    bez u¿ycia dodatkowej tablicy pamiêtaj¹cej jakiekolwiek informacje o kolejnoœci.
+  - sprawozdanie z teoretycznym opisem algorytmu dynamicznego programowania,
+-------------------------------------------------------------------------------
+ocena 5.5:
+  - opracowanie algorytmu programowania dynamicznego zwracaj¹cego pierwsz¹
+    (wed³ug porz¹dku leksykograficznego) permutacjê optymaln¹,
+    bez u¿ycia dodatkowej tablicy pamiêtaj¹cej jakiekolwiek informacje o kolejnoœci,
+  - sprawozdanie z teoretycznym opisem algorytmu dynamicznego programowania,
+    porównanie do przegl¹du zupe³nego, wykresy (zmierzonego i aproksymowanego)
+    czasu dzia³ania obu metod,
+-------------------------------------------------------------------------------
+
+
+Benchmarks:
+
+Format pliku z danymi wejœciowymi:
+Pierwsza linia zawiera liczbê naturaln¹ n oznaczaj¹c¹ liczbê zadañ.
+Ka¿da z nastêpnych n linii zawiera trzy liczby. Pierwsza oznacza czas
+wykonania zadania, druga wspó³czynnik kary za spóŸnienie zadania,
+natomiast trzecia ¿¹dany termin zakoñczenia realizacji zadania.
