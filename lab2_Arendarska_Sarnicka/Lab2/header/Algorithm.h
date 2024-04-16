@@ -13,6 +13,7 @@ class Algorithm
 public:
 	int n = 0;
 	int penalty_sum = 0;
+	static const int dmax = 1000000000;
 	vector<Element> task_list;
 	vector<int> result_list;
 
@@ -25,6 +26,16 @@ public:
 
 	void read_data(const string& path);
 	void write_data(const string& path);
+	void sort_tasks_by_deadline();
+	
+	Element return_task(int id)const;
+	void delete_task(int id);
+	void delete_end();
+	void add_task(Element e);
+	bool is_empty()const;
+	int get_size()const;
+	
+	int dynamicIteration();
 
 };
 
