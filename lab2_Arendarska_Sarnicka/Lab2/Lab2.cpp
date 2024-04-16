@@ -11,18 +11,18 @@
 //include class 
 #include "header\Algorithm.h"
 
-void write_data(const string& path, const vector<Algorithm> alg) {
+void write_data(const string& path, const vector<Algorithm>& algorytmy) {
 	ofstream file;
 	file.open(path);
 	if (file.is_open()) {
-		for (auto& a : alg) {
-			cout << "\n Suma kar: " << a.penalty_sum << std::endl;
-			file << "\n Suma kar: " << a.penalty_sum << std::endl;
-			for (auto& t : a.task_list) {
-				cout << t.id << " ";
-				file << t.id << " ";
+		for (const auto& alg : algorytmy) {
+			cout << "\n Suma kar: " << alg.penalty_sum << std::endl;
+			file << "\n Suma kar: " << alg.penalty_sum << std::endl;
+			for (int id : alg.result_list) {
+				cout << id + 1 << " "; 
+				file << id + 1 << " ";
 			}
-
+			file << endl; 
 		}
 	}
 	else {
@@ -42,20 +42,15 @@ int main()
 		Algorithm alg;
 		alg.read_data(data_p[i]);
 		int minPenalty = alg.dynamicIteration();
-		alg.kolejnosc(alg.task_list, alg.result_list);
-		alg.time_done_calculate(alg.task_list);
-		alg.sum_of_penalty(alg.task_list);
 
 		std::cout << "File: " << data_p[i] << std::endl;
 		std::cout << "Minimum Penalty using Dynamic Iteration: " << minPenalty << std::endl;
 
 		alg.penalty_sum = minPenalty;
 		algorytmy.push_back(alg);
-		// alg.write_data(data_p[i]);
+
 	}
 	write_data(data_s[0], algorytmy);
-
-	//cout << "\nSum of cmax: " << sum_c_max << endl;
 }
 
 
