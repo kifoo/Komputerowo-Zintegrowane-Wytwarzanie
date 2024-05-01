@@ -41,6 +41,31 @@ int Algorithm::dynamicIteration() {
 	return podproblemy.back();
 }
 
+int Algorithm::calculatePenalty(vector<Element>& taskList) {
+	int time = 0;
+	int penalty = 0;
+
+	for (auto& t : taskList) {
+		time += t.p;
+		t.p_done = time;
+		if (t.p_done - t.d > 0)
+			penalty += (t.p_done - t.d) * t.w;
+	}
+	return penalty;
+}
+
+int Algorithm::dummyCode() {
+	
+	sort(task_list.begin(), task_list.end(), [](const Element& a, const Element& b) {
+		return ((a.w * (a.d - a.p)) < (b.w * (b.d - b.p)) or (a.w * ((a.d - a.p)) == (b.w * (b.d - b.p)) and (a.w > b.w)));
+		// return a.d < b.d;
+		});
+	result_list.clear();
+	for (const auto& task : task_list) {
+		result_list.push_back(task.id);
+	}
+	return calculatePenalty(task_list);;
+}
 
 // Read data from file
 void Algorithm::read_data(const string& path) {
@@ -51,7 +76,7 @@ void Algorithm::read_data(const string& path) {
 	if (data.is_open()) {
 		data >> this->n;
 		for (int i = 0; i < this->n; i++) {
-			e.id = i + 1;
+			e.id = i;
 			data >> e.p;
 			data >> e.w;
 			data >> e.d;
@@ -61,7 +86,7 @@ void Algorithm::read_data(const string& path) {
 	else {
 		cout << "The file cannot be open." << endl;
 	}
-	cout << "Read data ok\n";
+	//cout << "Read data ok\n";
 
 	data.close();
 	return;

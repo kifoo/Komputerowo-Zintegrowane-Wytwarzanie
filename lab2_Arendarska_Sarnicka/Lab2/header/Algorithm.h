@@ -23,5 +23,7 @@ public:
 	void read_data(const string& path);
 	int dynamicIteration();
 
+	int dummyCode();
+	int calculatePenalty(vector<Element>& taskList);
 };
 
