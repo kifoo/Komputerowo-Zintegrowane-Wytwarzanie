@@ -1,7 +1,8 @@
-//struct job {
-//    vector<int> processing_times;
-//    int total_time{};
-//};
+struct Job {
+    int id = 0;
+    std::vector<int> processing_times;
+    int total_time = 0;
+};
 
 
 struct Data {
@@ -11,5 +12,5 @@ struct Data {
 
 struct Neh {
     int value;
-    std::vector<int> indices;
+    std::vector<int> order;
 };

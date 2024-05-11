@@ -1,3 +1,5 @@
+import os
+
 def split_data(filename):
     # Otwarcie pliku źródłowego do czytania danych
     with open(filename, 'r') as file:
@@ -20,7 +22,7 @@ def split_data(filename):
         file_number = data_part.split('\n')[0].split(':')[0].strip()
 
         # Tworzenie nazwy pliku
-        filename = f"data_{file_number}.txt"
+        filename = path = os.path.join(os.path.dirname(__file__),"all" ,f"data_{file_number}.txt")
 
         # Zapisywanie danych do pliku, łącznie z odpowiednią częścią 'neh'
         with open(filename, 'w') as file:
@@ -30,5 +32,5 @@ def split_data(filename):
 
 if __name__ == "__main__":
     # Podaj ścieżkę do pliku z danymi
-    source_file_path = "neh.data.txt"
+    source_file_path = "neh_data.txt"
     split_data(source_file_path)

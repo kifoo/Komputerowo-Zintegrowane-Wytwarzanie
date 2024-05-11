@@ -1,59 +1,85 @@
-//#include "header/Algorithm.h"
-//
-//
-//Algorithm::Algorithm() {
-//}
-//
-//Algorithm::~Algorithm() {
-//}
-//
-//
-//void Algorithm::neh_algorithm(const int num_jobs, const vector<vector<int>>& processing_times) {
-//    vector<job> jobs(num_jobs);
-//
-//    for (int i = 0; i < num_jobs; i++) {
-//        jobs[i].processing_times = processing_times[i];
-//        jobs[i].total_time = accumulate(jobs[i].processing_times.begin(), jobs[i].processing_times.end(), 0);
-//    }
-//    ranges::sort(jobs, compare_jobs);
-//
-//    vector<job> schedule{ jobs[0] };
-//
-//    for (int i = 1; i < num_jobs; i++) {
-//        job new_job = jobs[i];
-//
-//        int best_position = 0;
-//        int best_completion_time = numeric_limits<int>::max();
-//
-//        for (int j = 0; j <= i; j++) {
-//            vector<job> temp_schedule(schedule);
-//            temp_schedule.insert(temp_schedule.begin() + j, new_job);
-//
-//
-//            const int completion_time = calculate_completion_time(temp_schedule);
-//
-//            if (completion_time < best_completion_time) {
-//                best_completion_time = completion_time;
-//                best_position = j;
-//            }
-//        }
-//        schedule.insert(schedule.begin() + best_position, new_job);
-//    }
-//    calculate_completion_time(schedule);
-//}
-//
-//int Algorithm::calculate_completion_time(const vector<job>& jobs) {
-//    const auto num_machines = jobs[0].processing_times.size();
-//    vector<int> completion_times(num_machines, 0);
-//
-//    for (const auto& job : jobs) {
-//        completion_times[0] += job.processing_times[0];
-//        for (size_t j = 1; j < num_machines; j++)
-//            completion_times[j] = max(completion_times[j], completion_times[j - 1]) + job.processing_times[j];
-//    }
-//    return completion_times.back();
-//}
-//
-//bool Algorithm::compare_jobs(const job& job1, const job& job2) {
-//    return job1.total_time > job2.total_time;
-//}
+#include "header/Algorithm.h"
+
+
+Algorithm::Algorithm() {
+}
+
+Algorithm::~Algorithm() {
+}
+
+
+void Algorithm::neh_algorithm() {
+	vector<Job> copy = tasks;
+    sort(copy.begin(), copy.end(), compare_jobs);
+
+    vector<Job> schedule{ copy[0] };
+
+    for (int i = 1; i < taskCount; i++) {
+        Job new_job = copy[i];
+
+        int best_position = 0;
+        int best_completion_time = numeric_limits<int>::max();
+
+        for (int j = 0; j <= i; j++) {
+            vector<Job> temp_schedule(schedule);
+            temp_schedule.insert(temp_schedule.begin() + j, new_job);
+
+            const int completion_time = calculate_completion_time(temp_schedule);
+
+            if (completion_time < best_completion_time) {
+                best_completion_time = completion_time;
+                best_position = j;
+            }
+        }
+        schedule.insert(schedule.begin() + best_position, new_job);
+    }
+    fullTime = calculate_completion_time(schedule);
+	makeOrder(schedule);
+}
+
+int Algorithm::calculate_completion_time(const vector<Job>& jobs) {
+    vector<int> completion_times(machineCount, 0);
+
+    for (const auto& job : jobs) {
+        completion_times[0] += job.processing_times[0];
+        for (size_t j = 1; j < machineCount; j++)
+            completion_times[j] = max(completion_times[j], completion_times[j - 1]) + job.processing_times[j];
+    }
+    return completion_times.back();
+}
+
+void Algorithm::makeOrder(const vector<Job>& jobs) {
+	order.clear();
+	for (const auto& job : jobs) {
+		order.push_back(job.id);
+	}
+}
+
+void Algorithm::readData(const string& path) {
+    string tmp;
+	ifstream file;
+	file.open(path);
+    if (!file.is_open()) {
+		cout << "Error: File not found" << endl;
+		return;
+	}
+    file >> tmp;
+	file >> taskCount >> machineCount;
+	tasks.resize(taskCount);
+    for (int i = 0; i < taskCount; i++) {
+		tasks[i].processing_times.resize(machineCount);
+		tasks[i].id = i;
+        for (int j = 0; j < machineCount; j++) {
+			file >> tasks[i].processing_times[j];
+		}
+        tasks[i].total_time = accumulate(tasks[i].processing_times.begin(), tasks[i].processing_times.end(), 0);
+	}
+    file >> tmp;
+	file >> solution.value;
+    for (int i = 0; i < taskCount; i++) {
+        solution.order.resize(taskCount);
+		file >> solution.order[i];
+    }
+	file.close();
+    return;
+}
