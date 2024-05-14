@@ -34,7 +34,40 @@ void Algorithm::neh_algorithm() {
         schedule.insert(schedule.begin() + best_position, new_job);
     }
     fullTime = calculate_completion_time(schedule);
-	makeOrder(schedule);
+	//makeOrder(schedule);
+}
+
+void Algorithm::quick_neh_algorithm() {
+    vector<Job> jobs = tasks;
+
+    /*for (int i = 0; i < taskCount; i++) {
+        jobs[i].id = i + 1;
+        jobs[i].processing_times = processing_times[i];
+        jobs[i].total_time = accumulate(jobs[i].processing_times.begin(), jobs[i].processing_times.end(), 0);
+    }
+    ranges::sort(jobs, compare_jobs);*/
+    sort(jobs.begin(), jobs.end(), compare_jobs);
+
+    vector<Job> schedule;
+
+    for (const auto& new_job : jobs) {
+        vector<Job> best_schedule = schedule;
+        int min_completion_time = numeric_limits<int>::max();
+
+        for (size_t i = 0; i <= schedule.size(); ++i) {
+            schedule.insert(schedule.begin() + i, new_job);
+
+            int completion_time = calculate_completion_time(schedule);
+            if ( completion_time < min_completion_time) {
+                min_completion_time = completion_time;
+                best_schedule = schedule;
+            }
+            schedule.erase(schedule.begin() + i);
+        }
+        schedule = best_schedule;
+    }
+    fullTime = calculate_completion_time(schedule);
+	//makeOrder(schedule);
 }
 
 int Algorithm::calculate_completion_time(const vector<Job>& jobs) {

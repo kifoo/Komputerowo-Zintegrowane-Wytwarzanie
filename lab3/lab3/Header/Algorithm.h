@@ -30,6 +30,7 @@ public:
 
 	void neh_algorithm();
 	int calculate_completion_time(const vector<Job>& jobs);
+	void quick_neh_algorithm();
 
 	void makeOrder(const vector<Job>& jobs);
 	//void calculateFullTime(const vector<Job>& jobs);
