@@ -93,9 +93,8 @@ int main() {
     string path;
 	string extension = ".txt";
 	vector<Algorithm> algorithms;
-	long long int JobsTime = 0;
 
-	
+	vector<int> JobsTime;
 
     for (int i = 0; i <= 120; i++) {
 		path = "Dane/all/data_";
@@ -112,14 +111,19 @@ int main() {
 		Algorithm alg;
 		alg.readData(path);
 		std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
-		alg.neh_algorithm();
+		//alg.neh_algorithm();
+		alg.quick_neh_algorithm();
 		std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
-		JobsTime += std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count();
+		JobsTime.push_back((int)std::chrono::duration_cast<std::chrono::milliseconds>(end - begin).count());
 		algorithms.push_back(alg);
     }
 	
-	cout << "Time difference = " << JobsTime << "[ms]" << std::endl;
-
+	int sumTime = 0;
+	for (auto jobTime : JobsTime) {
+		sumTime += jobTime;
+		cout << "Time =  " << jobTime << endl;
+	}
+	cout << "Sum time = " << sumTime << endl;
 	//write_data("Dane/Wyniki.txt", algorithms, "Wyniki");
     
 }
