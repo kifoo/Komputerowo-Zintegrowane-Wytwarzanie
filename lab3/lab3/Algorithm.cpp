@@ -38,7 +38,7 @@ void Algorithm::neh_algorithm() {
         schedule.insert(jt, new_job);
     }
     fullTime = calculate_completion_time(schedule);
-	//makeOrder(schedule);
+	makeOrder(schedule);
 }
 
 void Algorithm::quick_neh_algorithm() {
@@ -67,7 +67,7 @@ void Algorithm::quick_neh_algorithm() {
         schedule = best_schedule;
     }
     fullTime = calculate_completion_time(schedule);
-	//makeOrder(schedule);
+	makeOrder(schedule);
 }
 
 int Algorithm::calculate_completion_time(const list<Job>& schedule) {

@@ -30,6 +30,8 @@ public:
 	list<int> order;
 	Neh solution;
 
+	double time_ms = 0;
+
 	void neh_algorithm();
 	int calculate_completion_time(const list<Job>& jobs);
 	void quick_neh_algorithm();
