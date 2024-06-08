@@ -18,16 +18,22 @@ void Annealing::Run() {
     saTemp = saTempStart;
     saDataTemp.clear();
     saDataPraw.clear();
-    Loop();
-    
+
     // Print the final best distance found and path to the file
     std::ofstream file("output.txt", std::ios_base::app);
     if (!file.is_open()) {
         std::cerr << "Error opening file!" << std::endl;
         return;
     }
+
+    PrintNodes(node, file);
+
+    Loop();
     
     file << "Final Best Distance: " << saBestDist << std::endl;
+	UpdateNodesPath(saBestPath);
+	PrintUpdatedNodes(nodeResult, file);
+    file << std::endl;
     PrintPath(saBestPath, file); // Print the final best path to the file
     file.close();
 }
@@ -45,12 +51,8 @@ void Annealing::Loop() {
         saDataDist.push_back(saBestDist);
         saPath = saBestPath;
     }
-
     // Print the current best distance after each iteration
-    std::cout << "Current Best Distance: " << saBestDist << std::endl;
-
-    // Add a delay if needed (using sleep_for, omitted here for simplicity)
-    // std::this_thread::sleep_for(std::chrono::milliseconds(loopDelay));
+    // std::cout << "Current Best Distance: " << saBestDist << std::endl;
     Loop();
 }
 
@@ -128,10 +130,10 @@ void Annealing::NodeRand() {
     }
 }
 
-void Annealing::PrintNodes(std::ofstream& file) {
+void Annealing::PrintNodes(std::vector<std::pair<int, int>> nodes, std::ofstream& file) {
     file << "Generated Nodes:" << std::endl;
-    for (size_t i = 0; i < node.size(); i++) {
-        file << "Node; " << i << ";" << node[i].first << "; " << node[i].second << ";" << std::endl;
+    for (size_t i = 0; i < nodes.size(); i++) {
+        file << "Node; " << i << ";" << nodes[i].first << "; " << nodes[i].second << ";" << std::endl;
     }
 }
 
@@ -141,4 +143,18 @@ void Annealing::PrintPath(const std::vector<int>& path, std::ofstream& file) {
         file << path[i] << " \n";
     }
     file << std::endl;
+}
+
+void Annealing::UpdateNodesPath(const std::vector<int>& path)
+{
+	for (size_t i = 0; i < path.size(); i++) {
+		nodeResult.push_back(node[path[i]]);
+	}
+}
+
+void Annealing::PrintUpdatedNodes(std::vector<std::pair<int, int>> nodes, std::ofstream& file) {
+    file << "Generated Nodes:" << std::endl;
+    for (size_t i = 0; i < nodes.size(); i++) {
+        file << "(" << nodes[i].first << ", " << nodes[i].second << ")" << std::endl;
+    }
 }

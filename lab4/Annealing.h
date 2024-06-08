@@ -15,6 +15,7 @@
 class Annealing {
     int nodeN = 0;
     std::vector<std::pair<int, int>> node;
+    std::vector<std::pair<int, int>> nodeResult;
     std::vector<int> saPath;
     std::vector<double> saDataDist;
     std::vector<double> saDataPraw;
@@ -40,9 +41,10 @@ public:
     double PathDist(const std::vector<int>& path);
     std::vector<int> RandPath();
     void NodeRand();
-    void PrintNodes(std::ofstream& file);
+    void PrintNodes(std::vector<std::pair<int, int>> nodes, std::ofstream& file);
+    void PrintUpdatedNodes(std::vector<std::pair<int, int>> nodes, std::ofstream& file);
     void PrintPath(const std::vector<int>& path, std::ofstream& file);
-
+    void UpdateNodesPath(const std::vector<int>& path);
 };
 
 #endif // ANNEALING_H
